@@ -2,24 +2,20 @@
 
 Joystick_ Joystick;
 
-int Br1 = 540; // define crossing points From left to right 
-int Br2 = 650;
-int Br3 = 720;
-
-int G1 = 600;  // Up or down crossing points 
-int G2 = 120; 
-
 byte AN1 = A0;
 byte AN2 = A1;
 
-byte Bstate; 
-byte Bstate1;
-byte oldoutput;
+byte gears[3][4] = {{2,4,6,7},
+                    {0,0,0,0},
+                    {1,3,5,8}};
+
+byte NEUTRAL = 0;
+byte oldoutput = NEUTRAL;
 
 void setup() {
   // put your setup code here, to run once:
  pinMode(AN1, INPUT);
- pinMode(AN2, INPUT);  
+ pinMode(AN2, INPUT);
 
  Serial.begin(9600);
  Joystick.begin();
@@ -27,84 +23,17 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-int Reading1 = map(analogRead(AN1), 500, 730, 0, 3); 
-int Reading2 = map(analogRead(AN2), 10, 580, 0, 2);
+  int x = map(analogRead(AN1), 500, 730, 0, 3); 
+  int y = map(analogRead(AN2), 10, 580, 0, 2);
 
-byte output; 
+  byte output = gears[x][y];
 
-switch (Reading1){ 
-  case 0:
-  if (Reading2==0){ 
-    output = 0; 
-  }
-  if (Reading2==2){
-    output = 1;
-  }
-  if (Reading2==1){
-   output = 8;
-  }
-    break; 
-  case 1: 
-  
-  if (Reading2==0){
-    output = 2;
-  }
-  
-  if (Reading2 == 2){
-    output = 3; 
-  }
-  if (Reading2==1){
-    output = 8;
-  }
-    break;
-
-     case 2: 
-  
-  if (Reading2==0){
-    output = 4;
-  }
-  
-  if (Reading2 == 2){
-    output = 5; 
-  }
-  if (Reading2==1){
-    output = 8;
-  }
-    break;
-
-     case 3: 
-  
-  if (Reading2==0){
-    output = 6;
-  }
-  
-  if (Reading2 == 2){
-    output = 7; 
-  }
-  if (Reading2==1){
-    output = 8;
-  }
-    break;
-    
-  default:
-  output = 8;
-}
-
-
-Serial.print(Reading1);
-Serial.print("  ");
-Serial.print(Reading2); 
-Serial.print("  ");
-Serial.println(output);
-
- if(oldoutput != output){
-  Joystick.setButton(oldoutput, LOW);
- }
-  
- Joystick.setButton(output,HIGH);
- oldoutput = output; 
-
-
- 
-
+   if(oldoutput != output) {
+     Joystick.setButton(oldoutput, LOW);
+     oldoutput = output; 
+   }
+   
+   if (output != NEUTRAL) {
+       Joystick.setButton(output,HIGH);
+   }
 }
