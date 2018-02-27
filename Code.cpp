@@ -5,7 +5,7 @@ Joystick_ Joystick;
 byte AN1 = A0;
 byte AN2 = A1;
 
-byte gears[3][4] = {{2,4,6,7},
+byte gears[4][3] = {{2,4,6,7},
                     {0,0,0,0},
                     {1,3,5,8}};
 
